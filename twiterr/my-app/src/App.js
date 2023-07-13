@@ -1,25 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+require("dotenv").config({ path: __dirname + "/.env" });
+const { twitterClient } = require("./twitterClient.js")
+const CronJob = require("cron").CronJob;
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const tweet = async () => {
+  try {
+    await twitterClient.v2.tweet("Hello world!");
+  } catch (e) {
+    console.log(e)
+  }
 }
 
-export default App;
+const cronTweet = new CronJob("30 * * * * *", async () => {
+  tweet();
+});
+
+cronTweet.start();
